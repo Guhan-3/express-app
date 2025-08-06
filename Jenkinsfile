@@ -1,12 +1,8 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'node'  
-    }
-
     environment {
-        CI = 'true' 
+        CI = 'true'
     }
 
     stages {
@@ -18,13 +14,13 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci' 
+                sh 'node -v'
+                sh 'npm ci'
             }
         }
 
         stage('Run Tests') {
             steps {
-                
                 sh '''
                     mkdir -p test-results
                     npm test -- --ci --reporters=default --reporters=jest-junit || true
@@ -46,7 +42,6 @@ pipeline {
 
         stage('Publish Coverage Report') {
             steps {
-                
                 archiveArtifacts artifacts: 'coverage/**/*', allowEmptyArchive: true
             }
         }
@@ -54,16 +49,9 @@ pipeline {
 
     post {
         always {
-            
             archiveArtifacts artifacts: '**/test-results/**/*, dist/**/*, build/**/*', allowEmptyArchive: true
         }
-
         failure {
             echo 'Build failed. Check test reports and logs for more info.'
         }
-
-        success {
-            echo 'Build and tests succeeded.'
-        }
-    }
-}
+        success
