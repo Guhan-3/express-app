@@ -1,5 +1,8 @@
 {
-  "dependencies": {
+  "scripts": {
+    "build":" npm run build"
+  },
+   "dependencies": {
     "express": "^5.1.0",
     "mongodb": "^6.18.0"
   }
