@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS_18'  
+    }
+
+    environment {
+        CI = 'true' 
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,13 +18,23 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh 'npm ci' 
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npm test || true'
+                
+                sh '''
+                    mkdir -p test-results
+                    npm test -- --ci --reporters=default --reporters=jest-junit || true
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
             }
         }
 
@@ -25,11 +43,27 @@ pipeline {
                 junit allowEmptyResults: true, testResults: 'test-results/junit.xml'
             }
         }
+
+        stage('Publish Coverage Report') {
+            steps {
+                
+                archiveArtifacts artifacts: 'coverage/**/*', allowEmptyArchive: true
+            }
+        }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'test-results/**/*', allowEmptyArchive: true
+            
+            archiveArtifacts artifacts: '**/test-results/**/*, dist/**/*, build/**/*', allowEmptyArchive: true
+        }
+
+        failure {
+            echo 'Build failed. Check test reports and logs for more info.'
+        }
+
+        success {
+            echo 'Build and tests succeeded.'
         }
     }
 }
