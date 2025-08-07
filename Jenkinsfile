@@ -25,11 +25,6 @@ pipeline{
             }
         }
         post{
-            always {
-                deleteDir()
-                echo 'Cleaning workspace after build.'
-
-            }
             sucess{
                 echo 'Build completed successfully.'
             }
