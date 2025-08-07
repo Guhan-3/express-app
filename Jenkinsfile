@@ -1,61 +1,42 @@
-pipeline {
+pipeline{
     agent any
-
-    environment {
-        CI = 'true'
+    tools {
+        nodejs 'node'
     }
-
-    stages {
-        stage('Checkout') {
+    stages{
+        stage ('checkout') {
             steps {
                 checkout scm
             }
         }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'node -v'
-                sh 'npm ci'
+        stage ('install dependencies'){
+            steps{
+                sh 'npm install'
             }
         }
-
-        stage('Run Tests') {
+        stage ('run tests') {
             steps {
-                sh '''
-                    mkdir -p test-results
-                    npm test -- --ci --reporters=default --reporters=jest-junit || true
-                '''
+                sh 'npm test'
             }
         }
-
-        stage('Build') {
+        stage ('build') {
             steps {
                 sh 'npm run build'
             }
         }
+        post{
+            always {
+                deleteDir()
+                echo 'Cleaning workspace after build.'
 
-        stage('Publish JUnit Report') {
-            steps {
-                junit allowEmptyResults: true, testResults: 'test-results/junit.xml'
             }
-        }
-
-        stage('Publish Coverage Report') {
-            steps {
-                archiveArtifacts artifacts: 'coverage/**/*', allowEmptyArchive: true
+            sucess{
+                echo 'Build completed successfully.'
             }
-        }
-    }
+            failure {
+                echo 'Build failed. Check test reports and logs for more info.'
+            }
 
-    post {
-        always {
-            archiveArtifacts artifacts: '**/test-results/**/*, dist/**/*, build/**/*', allowEmptyArchive: true
         }
-        failure {
-            echo 'Build failed. Check test reports and logs for more info.'
-        }
-        success {
-            echo 'Build and tests succeeded.'
-        }
-    }
+
 }
