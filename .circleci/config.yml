@@ -15,7 +15,7 @@ jobs:
       - run:  
           name: Install Git  
           command: |  
-            apk add --no-cache git || sudo apt-get update && sudo apt-get install -y git  
+            apk add --no-cache git  
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
