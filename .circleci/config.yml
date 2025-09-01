@@ -9,7 +9,7 @@ jobs:
       
   build_docker_image:
     docker:
-      - image: circleci/docker:latest
+      - image: docker:24.0.5
     steps:
       - checkout
       - setup_remote_docker:
