@@ -22,7 +22,7 @@ jobs:
           name: Build Docker Image  
           command: |  
             export TAG=$(echo $CIRCLE_SHA1 | cut -c1-8)  
-            docker build -t my-app-image:$TAG .  
+            docker build -t guhan33/my-app-image:$TAG .  
       - run:  
           name: Login to Docker Hub  
           command: |  
