@@ -12,6 +12,10 @@ jobs:
       - image: docker:24.0.5
     steps:
       - checkout
+      - run:  
+          name: Install Git  
+          command: |  
+            apk add --no-cache git || sudo apt-get update && sudo apt-get install -y git  
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
