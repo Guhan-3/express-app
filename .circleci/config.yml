@@ -30,7 +30,7 @@ jobs:
       - run:  
           name: Push Docker Image  
           command: |  
-            docker push my-app-image:$TAG 
+           docker push guhan33/my-app-image:$TAG  
 
 workflows:
   build_and_test:
