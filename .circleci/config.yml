@@ -20,9 +20,8 @@ jobs:
           docker_layer_caching: false
       - run:  
           name: Build Docker Image  
-          command: |  
-            export TAG=$(echo $CIRCLE_SHA1 | cut -c1-8)  
-            docker build -t guhan33/my-app-image:$TAG .  
+          command: |   
+            docker build -t guhan33/my-app-image:1.0 .  
       - run:  
           name: Login to Docker Hub  
           command: |  
@@ -30,7 +29,7 @@ jobs:
       - run:  
           name: Push Docker Image  
           command: |  
-           docker push guhan33/my-app-image:$TAG  
+           docker push guhan33/my-app-image:1.0 
 
 workflows:
   build_and_test:
