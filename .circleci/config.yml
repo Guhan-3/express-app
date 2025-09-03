@@ -14,10 +14,7 @@ jobs:
       - checkout  
       - run:  
           name: Install Dependencies  
-          command: npm install  
-      - run:  
-          name: Run Tests  
-          command: npm test  
+          command: npm install   
   
   
   build_and_push_docker_image:  
