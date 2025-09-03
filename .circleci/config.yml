@@ -1,40 +1,53 @@
-version: 2.1
-jobs:
-  run_tests:
-    docker:
-      - image: circleci/node:latest
-    steps:
-      - checkout
-      - run: npm install
-      
-  build_docker_image:
-    docker:
-      - image: docker:24.0.5
-    steps:
-      - checkout
+version: 2.1  
+  
+executors:  
+  docker-executor:  
+    docker:  
+      - image: docker:24.0.5   
+    working_directory: ~/express-app 
+  
+jobs:    
+  run_tests:  
+    docker:  
+      - image: circleci/node:latest 
+    steps:  
+      - checkout  
       - run:  
-          name: Install Git  
+          name: Install Dependencies  
+          command: npm install  
+      - run:  
+          name: Run Tests  
+          command: npm test  
+  
+  
+  build_and_push_docker_image:  
+    executor: docker-executor  
+    steps:  
+      - checkout  
+      - run:  
+          name: Install Required Tools  
           command: |  
-            apk add --no-cache git  
-      - setup_remote_docker:
-          docker_layer_caching: false
+            apk add --no-cache git curl  
+      - setup_remote_docker:   
+          docker_layer_caching: true  
       - run:  
           name: Build Docker Image  
-          command: |   
+          command: |  
             docker build -t guhan33/my-app-image:1.0 .  
       - run:  
           name: Login to Docker Hub  
           command: |  
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin  
       - run:  
-          name: Push Docker Image  
+          name: Push Docker Image to Docker Hub  
           command: |  
-           docker push guhan33/my-app-image:1.0 
-
-workflows:
-  build_and_test:
-    jobs:
-      - run_tests
-      - build_docker_image:
-          requires:
-            - run_tests
+            docker push guhan33/my-app-image:1.0  
+  
+workflows:  
+  version: 2  
+  build_and_deploy:  
+    jobs:  
+      - run_tests  
+      - build_and_push_docker_image:  
+          requires:  
+            - run_tests   
