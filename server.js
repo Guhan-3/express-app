@@ -59,6 +59,9 @@ app.post('/add-profile', async (req, res) => {
   }
 });
 
-app.listen(3000, '0.0.0.0', () => {
-  console.log("Server running at http://localhost:3000");
-});
+const PORT = 3000;   
+   
+app.listen(PORT, '0.0.0.0', () => {  
+  console.log(`Server running on port ${PORT}`);  
+  console.log(`Access it using the public IP or DNS of your EC2 instance: http://<EC2-PUBLIC-IP>:${PORT}`);  
+});  
