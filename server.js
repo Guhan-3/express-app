@@ -59,9 +59,9 @@ app.post('/add-profile', async (req, res) => {
   }
 });
 
-const PORT = 3000;   
+const PORT = 5000;   
    
-app.listen(PORT, '0.0.0.0', () => {  
+app.listen(PORT, () => {  
   console.log(`Server running on port ${PORT}`);  
   console.log(`Access it using the public IP or DNS of your EC2 instance: http://<EC2-PUBLIC-IP>:${PORT}`);  
 });  
